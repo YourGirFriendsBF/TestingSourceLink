@@ -135,12 +135,20 @@ AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
 EXTENSION_FILTER = set()
 LEECH_LOG = set()
+LEECH_LOG_ALT = set()
 MIRROR_LOGS = set()
 try:
     aid = getConfig('LEECH_LOG')
     aid = aid.split(' ')
     for _id in aid:
         LEECH_LOG.add(int(_id))
+except:
+    pass
+try:
+    aid = getConfig('LEECH_LOG_ALT')
+    aid = aid.split(' ')
+    for _id in aid:
+        LEECH_LOG_ALT.add(int(_id))
 except:
     pass
 try:
