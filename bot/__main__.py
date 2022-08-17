@@ -210,6 +210,18 @@ def main():
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Restarted successfully!", chat_id, msg_id)
         osremove(".restartmsg")
+    elif AUTHORIZED_CHATS:
+        try:
+            text = "<b>Bot Restarted❗️</b>\n\n"
+            text += f"<b>Date:</b> {dt_string}\n"
+            text += f"<b>Time:</b> {time_string}\n"
+            text += f"<b>TimeZone:</b> {tz}\n\n"
+            text += f"Please re-download your file if it was in process of mirroring.\n\n"
+            text += f"#Restarted"
+            for i in AUTHORIZED_CHATS:
+                bot.sendMessage(chat_id=i, text=text, parse_mode=ParseMode.HTML)
+        except Exception as e:
+            LOGGER.warning(e)    
 
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(BotCommands.PingCommand, ping,
