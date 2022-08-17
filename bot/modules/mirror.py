@@ -201,6 +201,14 @@ class MirrorListener:
         reply_to = self.message.reply_to_message
         if not self.isPrivate and INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
             DbManger().rm_complete_task(self.message.link)
+        botpm = f"<b>Hey {self.tag}!, I have sent your links in PM.</b>\n"
+        buttons = ButtonMaker()
+        bot_d = bot.get_me()	
+        b_uname = bot_d.username	
+        botstart = f"http://t.me/{b_uname}"	
+        buttons.buildbutton("View links in PM", f"{botstart}")
+        sendMarkup(botpm, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
+        reply_to = self.message.reply_to_message    
         msg = f"<b>File Name: </b><code>{escape(name)}</code>\n<b>File Size: </b>{size}"
         if self.isLeech:
             if SOURCE_LINK is True:
