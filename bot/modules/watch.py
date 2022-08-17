@@ -24,7 +24,7 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
 
     if BOT_PM and message.chat.type != 'private':
         try:
-            msg1 = f'Added your Requested link to Download\n'
+            msg1 = f'Will Send Your Task once Its Done!\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)
             send.delete()
         except Exception as e:
@@ -34,10 +34,9 @@ def _watch(bot, message, isZip=False, isLeech=False, multi=0):
             uname = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
             botstart = f"http://t.me/{b_uname}"
             buttons.buildbutton("Click Here to Start Me", f"{botstart}")
-            startwarn = f"Dear {uname},\n\n<b>I found that you haven't started me in Private yet.</b>\n\n" \
-                        f"Start me in Private & then Add your task here again!"
+            startwarn = f"<b>Hey {uname}!</b>,\n<b>You haven't started me in PM yet.</b>\n" \
+                        f"<b>From now on i will give links in PM only</b>"
             message = sendMarkup(startwarn, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
-            Thread(target=auto_delete_message, args=(bot, message, message)).start()
             return
 
     link = mssg.split()
