@@ -262,7 +262,7 @@ class MirrorListener:
              #           sendMessage(msg + fmsg, self.bot, self.message)
                         sleep(1)
                         fmsg = ''
-                if fmsg != '':
+                #if fmsg != '':
                 #    sendMessage(msg + fmsg, self.bot, self.message)
                 if LEECH_LOG:
                     try:
