@@ -259,11 +259,18 @@ class MirrorListener:
                 for index, (link, name) in enumerate(files.items(), start=1):
                     fmsg += f"{index}. <a href='{link}'>{name}</a>\n"
                     if len(fmsg.encode() + msg.encode()) > 4000:
-                        sendMessage(msg + fmsg, self.bot, self.message)
+             #           sendMessage(msg + fmsg, self.bot, self.message)
                         sleep(1)
                         fmsg = ''
                 if fmsg != '':
-                    sendMessage(msg + fmsg, self.bot, self.message)
+                #    sendMessage(msg + fmsg, self.bot, self.message)
+                if LEECH_LOG:
+                    try:
+                        for chatid in LEECH_LOG:
+                            bot.sendMessage(chat_id=chatid, text=msg + fmsg,
+                                            parse_mode=ParseMode.HTML)
+                    except Exception as e:
+                        LOGGER.warning(e)    
         else:
             msg += f'\n<b>Type: </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
