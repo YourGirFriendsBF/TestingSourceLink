@@ -16,6 +16,8 @@ from .helper.telegram_helper.bot_commands import BotCommands
 from .helper.telegram_helper.message_utils import sendMessage, sendMarkup, editMessage, sendLogFile
 from .helper.telegram_helper.filters import CustomFilters
 from .helper.telegram_helper.button_build import ButtonMaker
+from datetime import datetime, date
+from pytz import timezone
 from threading import Thread
 from .modules import authorize, list, cancel_mirror, mirror_status, mirror, clone, watch, shell, eval, delete, count, leech_settings, search, rss
 
@@ -159,8 +161,12 @@ def bot_help(update, context):
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 
 def main():
+    now = datetime.now(timezone(f'Asia/Kolkata'))
+    tz = now.strftime("GMT%z")
+    tz = "{0}:{1}".format(tz[:-2], tz[-2:])
+    dt_string = now.strftime("%d/%m/%Y")
+    time_string = now.strftime("%I:%M:%S %p")
     start_cleanup()
-    notifier_dict = False
     if INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
         if notifier_dict := DbManger().get_incomplete_tasks():
             for cid, data in notifier_dict.items():
@@ -169,7 +175,11 @@ def main():
                         chat_id, msg_id = map(int, f)
                     msg = 'Restarted successfully!'
                 else:
-                    msg = 'Bot Restarted!'
+                    msg = "<b>Bot Restarted❗️</b>\n\n"
+                    msg += f"<b>Date:</b> {dt_string}\n"
+                    msg += f"<b>Time:</b> {time_string}\n"
+                    msg += f"<b>TimeZone:</b> {tz}\n\n"
+                    msg += f"Please re-download your file if it was in process of mirroring.\n\n"
                 for tag, links in data.items():
                      msg += f"\nIncomplete Tasks List:\n\n{tag}: "
                      for index, link in enumerate(links, start=1):
