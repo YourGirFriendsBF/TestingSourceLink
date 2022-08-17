@@ -334,8 +334,8 @@ class MirrorListener:
                     pass
             else:
                 pass
-            uploadmsg = sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
-            Thread(target=auto_delete_upload_message, args=(bot, self.message, uploadmsg)).start()
+            # uploadmsg = sendMarkup(msg, self.bot, self.message, InlineKeyboardMarkup(buttons.build_menu(2)))
+            #Thread(target=auto_delete_upload_message, args=(bot, self.message, uploadmsg)).start()
             if MIRROR_LOGS:
                 try:
                     for chatid in MIRROR_LOGS:
