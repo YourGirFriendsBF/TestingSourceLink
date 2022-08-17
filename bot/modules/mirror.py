@@ -386,19 +386,19 @@ def _mirror(bot, message, isZip=False, extract=False, isQbit=False, isLeech=Fals
     
     if BOT_PM and message.chat.type != 'private':
         try:
-            msg1 = f'Added your Requested link to Download !\nWill send here once done.'
+            msg1 = f'Will Send Your Task once Its Done!\n'
             send = bot.sendMessage(message.from_user.id, text=msg1)
+            send.delete()
         except Exception as e:
             LOGGER.warning(e)
             bot_d = bot.get_me()
             b_uname = bot_d.username
             uname = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
             botstart = f"http://t.me/{b_uname}"
-            buttons.buildbutton("Start Me", f"{botstart}")
-            startwarn = f"Dear {uname},\n\n<b>I found that you haven't started me in Private yet.</b>\n\n" \
-                        f"Start me in Private & then Add your task here again!"
+            buttons.buildbutton("Click Here to Start Me", f"{botstart}")
+            startwarn = f"<b>Hey {uname}!</b>,\n<b>You haven't started me in PM yet.</b>\n" \
+                        f"<b>From now on i will give links in PM only</b>"
             message = sendMarkup(startwarn, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
-            Thread(target=auto_delete_message, args=(bot, message, message)).start()
             return
     
     mesg = message.text.split('\n')
