@@ -161,36 +161,29 @@ def bot_help(update, context):
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 
 def main():
-    now = datetime.now(timezone(f'Asia/Kolkata'))
-    tz = now.strftime("GMT%z")
-    tz = "{0}:{1}".format(tz[:-2], tz[-2:])
-    dt_string = now.strftime("%d/%m/%Y")
-    time_string = now.strftime("%I:%M:%S %p")
+    # bot.set_my_commands(botcmds)
     start_cleanup()
     if INCOMPLETE_TASK_NOTIFIER and DB_URI is not None:
-        if notifier_dict := DbManger().get_incomplete_tasks():
+        notifier_dict = DbManger().get_incomplete_tasks()
+        if notifier_dict:
             for cid, data in notifier_dict.items():
                 if ospath.isfile(".restartmsg"):
                     with open(".restartmsg") as f:
                         chat_id, msg_id = map(int, f)
                     msg = 'Restarted successfully!'
                 else:
-                    msg = "<b>Bot Restarted❗️</b>\n\n"
-                    msg += f"<b>Date:</b> {dt_string}\n"
-                    msg += f"<b>Time:</b> {time_string}\n"
-                    msg += f"<b>TimeZone:</b> {tz}\n\n"
-                    msg += f"Please re-download your file if it was in process of mirroring.\n\n"
+                    msg = 'Bot Restarted!'
                 for tag, links in data.items():
-                     msg += f"\nIncomplete Tasks List:\n\n{tag}: "
+                     msg += f"\n\n{tag}: "
                      for index, link in enumerate(links, start=1):
-                         msg += f" <a href='{link}'>{index}</a> \n"
+                         msg += f" <a href='{link}'>{index}</a> |"
                          if len(msg.encode()) > 4000:
                              if 'Restarted successfully!' in msg and cid == chat_id:
                                  bot.editMessageText(msg, chat_id, msg_id, parse_mode='HTMl', disable_web_page_preview=True)
                                  osremove(".restartmsg")
                              else:
                                  try:
-                                     bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
+                                     bot.sendMessage(cid, msg, 'HTML')
                                  except Exception as e:
                                      LOGGER.error(e)
                              msg = ''
@@ -199,7 +192,7 @@ def main():
                      osremove(".restartmsg")
                 else:
                     try:
-                        bot.sendMessage(cid, msg, 'HTML', disable_web_page_preview=True)
+                        bot.sendMessage(cid, msg, 'HTML')
                     except Exception as e:
                         LOGGER.error(e)
 
@@ -208,12 +201,6 @@ def main():
             chat_id, msg_id = map(int, f)
         bot.edit_message_text("Restarted successfully!", chat_id, msg_id)
         osremove(".restartmsg")
-    elif not notifier_dict and AUTHORIZED_CHATS:
-        for id_ in AUTHORIZED_CHATS:
-            try:
-                bot.sendMessage(id_, "Bot Restarted Successfully!", 'HTML')
-            except Exception as e:
-                LOGGER.error(e)
 
     start_handler = CommandHandler(BotCommands.StartCommand, start, run_async=True)
     ping_handler = CommandHandler(BotCommands.PingCommand, ping,
