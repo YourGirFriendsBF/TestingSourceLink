@@ -97,9 +97,16 @@ def _clone(message, bot, multi=0):
             sleep(4)
             Thread(target=_clone, args=(nextmsg, bot, multi)).start()
         if files <= 20:
-            msg = sendMessage(f"<b>Almost there, I'm  Cloning:</b> <code>{link}</code>", bot, message)
+            msg = sendMessage(f"Cloning: <code>{link}</code>", bot, message)
             result, button = gd.clone(link)
             deleteMessage(bot, msg)
+            botpm = f"<b>Hey {tag}!, I have sent your links in PM.</b>\n"
+            buttons = ButtonMaker()
+            bot_d = bot.get_me()	
+            b_uname = bot_d.username	
+            botstart = f"http://t.me/{b_uname}"	
+            buttons.buildbutton("View links in PM", f"{botstart}")
+            sendMarkup(botpm, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
         else:
             drive = GoogleDriveHelper(name)
             gid = ''.join(SystemRandom().choices(ascii_letters + digits, k=12))
@@ -116,15 +123,26 @@ def _clone(message, bot, multi=0):
                     Interval[0].cancel()
                     del Interval[0]
                     delete_all_messages()
+                    botpm = f"<b>Hey {tag}!, I have sent your links in PM.</b>\n"
+                    buttons = ButtonMaker()
+                    bot_d = bot.get_me()	
+                    b_uname = bot_d.username	
+                    botstart = f"http://t.me/{b_uname}"	
+                    buttons.buildbutton("View links in PM", f"{botstart}")
+                    sendMarkup(botpm, bot, message, InlineKeyboardMarkup(buttons.build_menu(2)))
                 else:
                     update_all_messages()
             except IndexError:
                 pass
-        cc = f'\n\n<b>cc: </b>{tag}'
+        cc = f'\n\n<b>By: </b>{tag} | User ID: <code>{message.from_user.id}</code>\n'
         if button in ["cancelled", ""]:
             sendMessage(f"{tag} {result}", bot, message)
         else:
-            msg = sendMarkup(result + cc, bot, message, button)
+            bot.sendMessage(message.from_user.id, text=result + cc, reply_markup=button,	
+                            parse_mode=ParseMode.HTML)	
+            for chatid in MIRROR_LOGS:	
+                    bot.sendMessage(chat_id=chatid, text=result + cc, reply_markup=button, parse_mode=ParseMode.HTML)	
+            #sendMarkup(result + cc, bot, message, button)
             LOGGER.info(f'Cloning Done: {name}')
             Thread(target=auto_delete_message, args=(bot, message, msg)).start()
         if is_gdtot:
